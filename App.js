@@ -23,16 +23,18 @@ import {SafeAreaView, useColorScheme} from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import BottomTabs from './src/navigator/BottomTabs';
+import MainNavigator from './src/navigator/MainNavigator';
+import {AuthProvider} from './src/context/auth';
 
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
   const httpLink = new HttpLink({
-    uri: 'https://8fd4-202-170-60-227.ap.ngrok.io/graphql',
+    uri: 'https://9b8d-202-170-60-245.ap.ngrok.io/graphql',
   });
 
   const wsLink = new GraphQLWsLink(
     createClient({
-      url: 'ws://8fd4-202-170-60-227.ap.ngrok.io/subscriptions',
+      url: 'ws://9b8d-202-170-60-245.ap.ngrok.io/subscriptions',
     }),
   );
 
@@ -56,7 +58,9 @@ const App = () => {
     <ApolloProvider client={client}>
       <NativeBaseProvider>
         <NavigationContainer>
-          <BottomTabs />
+          <AuthProvider>
+            <MainNavigator />
+          </AuthProvider>
         </NavigationContainer>
       </NativeBaseProvider>
     </ApolloProvider>
