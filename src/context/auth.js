@@ -30,7 +30,7 @@ const AuthProvider = ({children}) => {
   const [authCredentials, setAuthCredentials] = useState();
 
   const onAuthStateChanged = useCallback(userDetails => {
-    //console.log(userDetails);
+
     setUser(userDetails);
   }, []);
 

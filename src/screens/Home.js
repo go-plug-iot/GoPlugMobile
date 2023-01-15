@@ -1,14 +1,20 @@
 import React from 'react';
 import {TouchableOpacity, Text} from 'react-native';
-import {gql, useMutation, useSubscription} from '@apollo/client';
+import {gql, useMutation, useQuery, useSubscription} from '@apollo/client';
 import {VStack, Box, Heading, Button} from 'native-base';
 import auth from '@react-native-firebase/auth';
 import {SWITCH_OFF, SWITCH_ON} from '../mutations';
 import {SUBSCRIBE_SWITCH_STATUS} from '../subscription';
 import {useAuth} from '../context/auth';
+import {GET_USER} from '../queries';
 
 const Home = () => {
   const authCtx = useAuth();
+  const {
+    data: userData,
+    loading: isUserLoading,
+    error: isUserError,
+  } = useQuery(GET_USER);
   const [turnOnSwitch, {on_data, on_loading, on_error}] =
     useMutation(SWITCH_ON);
   const [turnOffSwitch, {off_data, off_loading, off_error}] =
@@ -25,8 +31,7 @@ const Home = () => {
       variables: {topic: 'SWITCH_2'},
     },
   );
-  console.log(switch_1_data);
-  //console.log(auth().currentUser);
+  
   return (
     <VStack space={3} justifyContent="center" alignItems="center">
       <Box w="300" rounded="md" shadow={3}>

@@ -19,12 +19,14 @@ import {
   split,
   HttpLink,
 } from '@apollo/client';
+import {setContext} from '@apollo/client/link/context';
 import {SafeAreaView, useColorScheme} from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import BottomTabs from './src/navigator/BottomTabs';
 import MainNavigator from './src/navigator/MainNavigator';
 import {AuthProvider} from './src/context/auth';
+import {storage} from './src/utils/storage';
 
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -38,6 +40,19 @@ const App = () => {
     }),
   );
 
+  const authLink = setContext((_, {headers}) => {
+    // get the authentication token from local storage if it exists
+    const token = storage.getString('user.token');
+    console.log(token);
+    // return the headers to the context so httpLink can read them
+    return {
+      headers: {
+        ...headers,
+        authorization: token ? `${token}` : '',
+      },
+    };
+  });
+
   const splitLink = split(
     ({query}) => {
       const definition = getMainDefinition(query);
@@ -50,7 +65,7 @@ const App = () => {
     httpLink,
   );
   const client = new ApolloClient({
-    link: splitLink,
+    link: authLink.concat(splitLink),
     cache: new InMemoryCache(),
   });
 
